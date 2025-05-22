@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Navlink } from "./navlink";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const links = [
     { name: "Inicio", href: "/" },
-    { name: "Sobre nosotros", href: "/about" },
-    { name: "Productos", href: "/products" },
+    { name: "Nosotros", href: "/about" },
+    { name: "Productos", href: "/products/all" },
     { name: "Contacto", href: "/contact" },
   ];
 
