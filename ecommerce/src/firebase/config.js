@@ -3,11 +3,11 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
-  authDomain: "ecommerce-382a6.firebaseapp.com",
-  projectId: "ecommerce-382a6",
-  storageBucket: "ecommerce-382a6.firebasestorage.app",
-  messagingSenderId: "1036291600538",
-  appId: "1:1036291600538:web:25671a05cb93e636d72f23",
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
