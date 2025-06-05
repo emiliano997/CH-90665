@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleChange } from "@/utils/handleChange";
 
-export function CreateForm() {
+export function CreateForm({ id = null }) {
   const [data, setData] = useState({
     name: "",
     slug: "",
@@ -44,34 +44,74 @@ export function CreateForm() {
       return;
     }
 
-    // Petición POST
-    const response = await fetch("http://localhost:3000/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    if (id) {
+      const response = await fetch(`http://localhost:3000/api/product/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Error creating product:", error);
-      return;
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Error updating product:", error);
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("Product updated successfully:", result);
+    } else {
+      const response = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Error creating product:", error);
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("Product created successfully:", result);
+      setData({
+        name: "",
+        slug: "",
+        description: "",
+        price: 0,
+        stock: 0,
+        category: "",
+        imageUrl: "",
+      });
     }
-
-    const result = await response.json();
-
-    console.log("Product created successfully:", result);
-    setData({
-      name: "",
-      slug: "",
-      description: "",
-      price: 0,
-      stock: 0,
-      category: "",
-      imageUrl: "",
-    });
   };
+
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:3000/api/product/${id}`)
+        .then((res) => res.json())
+        .then((product) => {
+          if (product) {
+            setData({
+              name: product.name || "",
+              slug: product.slug || "",
+              description: product.description || "",
+              price: product.price || 0,
+              stock: product.stock || 0,
+              category: product.category || "",
+              imageUrl: product.imageUrl || "",
+            });
+          }
+        })
+        .catch((error) => console.error("Error fetching product:", error));
+    }
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -98,7 +138,10 @@ export function CreateForm() {
         value={data.slug}
         onChange={(e) => handleChange({ e, setValues: setData, values: data })}
         placeholder="Slug"
-        className="w-full p-2 border rounded"
+        className={`w-full p-2 border rounded ${
+          id ? "text-gray-500 cursor-not-allowed" : ""
+        }`}
+        disabled={!!id}
         required
       />
       <input
@@ -139,7 +182,7 @@ export function CreateForm() {
         type="submit"
         className="px-4 py-2 bg-blue-500 text-white rounded"
       >
-        Create Product
+        {id ? "Update Product" : "Create Product"}
       </button>
     </form>
   );

@@ -1,7 +1,26 @@
-export async function ProductsTable() {
-  const products = await fetch("http://localhost:3000/api/products/all").then(
-    (res) => res.json()
-  );
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+
+export function ProductsTable({ products }) {
+  const [filteredProducts, setFilteredProducts] = useState(products.products);
+
+  const handleDelete = async (id) => {
+    const response = await fetch(`http://localhost:3000/api/product/${id}`, {
+      method: "DELETE",
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Product deleted successfully:", result);
+      setFilteredProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== id)
+      );
+    } else {
+      console.error("Error deleting product:", result.error);
+    }
+  };
 
   return (
     <div className="overflow-x-scroll w-full">
@@ -38,7 +57,7 @@ export async function ProductsTable() {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {products.products.map((product) => (
+          {filteredProducts.map((product) => (
             <tr key={product.id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {product.id}
@@ -69,10 +88,16 @@ export async function ProductsTable() {
                 />
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-blue-600 hover:text-blue-900">
+                <Link
+                  href={`http://localhost:3000/admin/edit/${product.id}`}
+                  className="text-blue-600 hover:text-blue-900"
+                >
                   Edit
-                </button>
-                <button className="text-red-600 hover:text-red-900 ml-2">
+                </Link>
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="text-red-600 hover:text-red-900 ml-2"
+                >
                   Delete
                 </button>
               </td>

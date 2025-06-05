@@ -2,6 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { DetailCard } from "../../components/DetailCard";
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+
+  return {
+    title: `Detalle del producto ${id}`,
+    description: `Detalles del producto con ID ${id}`,
+    keywords: ["producto", "detalle", id],
+  };
+}
+
 export default async function DetailPage({ params }) {
   const { id } = await params;
 

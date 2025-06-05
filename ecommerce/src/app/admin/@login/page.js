@@ -1,5 +1,11 @@
 import { LoginForm } from "../components/LoginForm";
 
+export const metadata = {
+  title: "Login",
+  description: "Login to your account",
+  keywords: ["login", "authentication", "admin"],
+};
+
 export default function LoginPage() {
   return (
     <div className="flex items-center justify-center bg-gray-600 w-96 rounded-lg">
